@@ -297,13 +297,14 @@ void LCDDisplay::displayPicture(
     hdma2d_.XferCpltCallback = NULL;
 
     /*##-3- Foreground Configuration ###########################################*/
-    hdma2d_.LayerCfg[1].AlphaMode      = DMA2D_NO_MODIF_ALPHA;
-    hdma2d_.LayerCfg[1].InputAlpha     = 0xFF;
-    hdma2d_.LayerCfg[1].InputColorMode = DMA2D_INPUT_ARGB8888;
-    hdma2d_.LayerCfg[1].InputOffset    = 0;
-    hdma2d_.LayerCfg[1].RedBlueSwap = DMA2D_RB_REGULAR; /* No ForeGround Red/Blue swap */
-    hdma2d_.LayerCfg[1].AlphaInverted =
-        DMA2D_REGULAR_ALPHA; /* No ForeGround Alpha inversion */
+    hdma2d_.LayerCfg[currentLCDLayer_].AlphaMode      = DMA2D_REPLACE_ALPHA;
+    hdma2d_.LayerCfg[currentLCDLayer_].InputAlpha     = 0x00;
+    hdma2d_.LayerCfg[currentLCDLayer_].InputColorMode = DMA2D_INPUT_ARGB8888;
+    hdma2d_.LayerCfg[currentLCDLayer_].InputOffset    = 0xFF;
+    hdma2d_.LayerCfg[currentLCDLayer_].RedBlueSwap =
+        DMA2D_RB_REGULAR; /* No ForeGround Red/Blue swap */
+    hdma2d_.LayerCfg[currentLCDLayer_].AlphaInverted =
+        DMA2D_INVERTED_ALPHA; /* No ForeGround Alpha inversion */
 
     hdma2d_.Instance = DMA2D;
 

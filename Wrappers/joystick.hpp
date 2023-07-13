@@ -34,14 +34,14 @@ namespace disco {
 
 class Joystick {
    public:
-    Joystick& getInstance();
+    // the Joystrick class follows the singleton pattern
+    static Joystick& getInstance();
 
     // prevent copy and assignment
     Joystick(const Joystick&)            = delete;
     Joystick& operator=(const Joystick&) = delete;
 
     // public methods
-    ReturnCode init();
     enum class State {
         UpPressed,
         DownPressed,
@@ -51,11 +51,19 @@ class Joystick {
         NonePressed
     };
     State getState();
-    void setCallback(mbed::Callback<void(State)> callback);
+    using Event            = State;
+    using JoystickCallback = mbed::Callback<void(Event)>;
+    void setCallback(JoystickCallback clientCallback);
 
    private:
     // private methods
-    Joystick() = default;
+    Joystick();
+
+    void onJoyUp();
+    void onJoyDown();
+    void onJoyLeft();
+    void onJoyRight();
+    void onJoySel();
 
     // constants
     static constexpr PinName kJoyUpPin    = PK_6;
@@ -64,7 +72,16 @@ class Joystick {
     static constexpr PinName kJoyRightPin = PK_5;
     static constexpr PinName kJoySelPin   = PK_2;
 
-    // data members
+    JoystickCallback _clientCallback = nullptr;
+
+    // InterruptIn pins used
+    InterruptIn _joyUpPin;
+    InterruptIn _joyDownPin;
+    InterruptIn _joyLeftPin;
+    InterruptIn _joyRightPin;
+    InterruptIn _joySelPin;
+
+    // static data members
     static bool _isInitialized;
 };
 
