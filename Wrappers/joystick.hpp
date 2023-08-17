@@ -76,11 +76,11 @@ class Joystick {
     static constexpr PinName kJoyRightPin = PK_5;
     static constexpr PinName kJoySelPin   = PK_2;
 
-    JoystickCallback _clientUpCallback = nullptr;
-    JoystickCallback _clientDownCallback = nullptr;
-    JoystickCallback _clientLeftCallback = nullptr;
+    JoystickCallback _clientUpCallback    = nullptr;
+    JoystickCallback _clientDownCallback  = nullptr;
+    JoystickCallback _clientLeftCallback  = nullptr;
     JoystickCallback _clientRightCallback = nullptr;
-    JoystickCallback _clientSelCallback = nullptr;
+    JoystickCallback _clientSelCallback   = nullptr;
 
     // InterruptIn pins used
     InterruptIn _joyUpPin;

@@ -29,10 +29,9 @@
 #include "stm32h747i_discovery_sdram.h"
 
 // from DISCO_H747I/Drivers/STM32H7xx_HAL_Driver
+#include "mbed_trace.h"
 #include "stdio.h"
 #include "stm32h7xx_hal_dsi.h"
-
-#include "mbed_trace.h"
 #if MBED_CONF_MBED_TRACE_ENABLE
 #define TRACE_GROUP "LCDDisplay"
 #endif  // MBED_CONF_MBED_TRACE_ENABLE
@@ -122,7 +121,7 @@ ReturnCode LCDDisplay::init() {
     /* Configure the MPU attributes as Write Through for SDRAM*/
     MPU_Config();
 
-    //HAL_Init();
+    // HAL_Init();
     /* Initialize the SDRAM */
     BSP_SDRAM_Init(0);
     /* Toggle Hardware Reset of the DSI LCD using
@@ -261,28 +260,20 @@ ReturnCode LCDDisplay::init() {
     /* Enable DSI Wrapper so DSI IP will drive the LTDC */
     __HAL_DSI_WRAPPER_ENABLE(&hlcd_dsi);
 
-    HAL_DSI_LongWrite(&hlcd_dsi,
-                      0,
-                      DSI_DCS_LONG_PKT_WRITE,
-                      4,
-                      OTM8009A_CMD_CASET,
-                      (uint8_t*) pCol_);
-    HAL_DSI_LongWrite(&hlcd_dsi,
-                      0,
-                      DSI_DCS_LONG_PKT_WRITE,
-                      4,
-                      OTM8009A_CMD_PASET,
-                      (uint8_t*)pPage_);
+    HAL_DSI_LongWrite(
+        &hlcd_dsi, 0, DSI_DCS_LONG_PKT_WRITE, 4, OTM8009A_CMD_CASET, (uint8_t*)pCol_);
+    HAL_DSI_LongWrite(
+        &hlcd_dsi, 0, DSI_DCS_LONG_PKT_WRITE, 4, OTM8009A_CMD_PASET, (uint8_t*)pPage_);
 
     setFont(createFont24());
 
-    //briefDisplay();
-    //HAL_DSI_Refresh(&hlcd_dsi);
+    // briefDisplay();
+    // HAL_DSI_Refresh(&hlcd_dsi);
     clearDisplay();
 
     return ReturnCode::Ok;
 }
-    
+
 void LCDDisplay::clearDisplay() {
     fillRect(0, 0, lcdXsize_, lcdYsize_, LCD_COLOR_WHITE);
     refreshLCD();

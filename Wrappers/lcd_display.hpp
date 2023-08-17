@@ -135,9 +135,9 @@ class LCDDisplay {
                                    BSP_LCD_GetPixelFormat};
 
     // constant definitions
-    static constexpr uint32_t kDisplayWidth = 800;
+    static constexpr uint32_t kDisplayWidth  = 800;
     static constexpr uint32_t kDisplayHeight = 480;
-    
+
     static constexpr uint32_t LCD_FRAME_BUFFER = 0xD0000000;
     static constexpr uint32_t VSYNC            = 1;
     static constexpr uint32_t VBP              = 1;
