@@ -29,9 +29,10 @@
 #include "stm32h747i_discovery_sdram.h"
 
 // from DISCO_H747I/Drivers/STM32H7xx_HAL_Driver
-#include "mbed_trace.h"
 #include "stdio.h"
 #include "stm32h7xx_hal_dsi.h"
+
+#include "mbed_trace.h"
 #if MBED_CONF_MBED_TRACE_ENABLE
 #define TRACE_GROUP "LCDDisplay"
 #endif  // MBED_CONF_MBED_TRACE_ENABLE
@@ -121,7 +122,7 @@ ReturnCode LCDDisplay::init() {
     /* Configure the MPU attributes as Write Through for SDRAM*/
     MPU_Config();
 
-    HAL_Init();
+    //HAL_Init();
     /* Initialize the SDRAM */
     BSP_SDRAM_Init(0);
     /* Toggle Hardware Reset of the DSI LCD using
@@ -255,7 +256,7 @@ ReturnCode LCDDisplay::init() {
     funcDriver_.GetFormat(0, &lcdPixelFormat_);
 
     /* Update pitch : the draw is done on the whole physical X Size */
-    HAL_LTDC_SetPitch(&hlcd_ltdc, Lcd_Ctx[0].XSize, 0);
+    HAL_LTDC_SetPitch(&hlcd_ltdc, Lcd_Ctx[0].XSize, currentLCDLayer_);
 
     /* Enable DSI Wrapper so DSI IP will drive the LTDC */
     __HAL_DSI_WRAPPER_ENABLE(&hlcd_dsi);
@@ -265,19 +266,26 @@ ReturnCode LCDDisplay::init() {
                       DSI_DCS_LONG_PKT_WRITE,
                       4,
                       OTM8009A_CMD_CASET,
-                      (std::uint8_t*)pCol_);
+                      (uint8_t*) pCol_);
     HAL_DSI_LongWrite(&hlcd_dsi,
                       0,
                       DSI_DCS_LONG_PKT_WRITE,
                       4,
                       OTM8009A_CMD_PASET,
-                      (std::uint8_t*)pPage_);
+                      (uint8_t*)pPage_);
 
     setFont(createFont24());
 
-    briefDisplay();
+    //briefDisplay();
+    //HAL_DSI_Refresh(&hlcd_dsi);
+    clearDisplay();
 
     return ReturnCode::Ok;
+}
+    
+void LCDDisplay::clearDisplay() {
+    fillRect(0, 0, lcdXsize_, lcdYsize_, LCD_COLOR_WHITE);
+    refreshLCD();
 }
 
 void LCDDisplay::displayPicture(
@@ -324,7 +332,7 @@ void LCDDisplay::displayPicture(
                       DSI_DCS_LONG_PKT_WRITE,
                       2,
                       OTM8009A_CMD_WRTESCN,
-                      (std::uint8_t*)pSyncLeft_);
+                      (uint8_t*)pSyncLeft_);
 
     /* Refresh the LCD */
     HAL_DSI_Refresh(&hlcd_dsi);
@@ -511,18 +519,16 @@ void LCDDisplay::briefDisplay() {
     // DSI using the partial"); displayStringAtLine(5, (uint8_t *)"Refresh method by
     // splitting the display area.");
     /* set the refresh area to LCD left half */
-    tr_debug("Step 1");
 
     HAL_DSI_LongWrite(&hlcd_dsi,
                       0,
                       DSI_DCS_LONG_PKT_WRITE,
                       2,
                       OTM8009A_CMD_WRTESCN,
-                      (std::uint8_t*)pSyncLeft_);
-    tr_debug("Step 2");
+                      (uint8_t*)pSyncLeft_);
+
     /* Refresh the LCD */
     HAL_DSI_Refresh(&hlcd_dsi);
-    tr_debug("Step 3");
 }
 
 // DrawContext

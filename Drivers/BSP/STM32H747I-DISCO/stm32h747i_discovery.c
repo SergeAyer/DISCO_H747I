@@ -627,6 +627,7 @@ int32_t BSP_JOY_Init(JOY_TypeDef JOY, JOYMode_TypeDef JoyMode, JOYPin_TypeDef Jo
   for(joykey = 0U; joykey < JOY_KEY_NUMBER ; joykey++)
   {
     key_pressed = 1UL << joykey;
+
     if((key_pressed & (uint32_t)JoyPins) == key_pressed)
     {
       if(JOY == JOY1)
@@ -677,7 +678,9 @@ int32_t BSP_JOY_Init(JOY_TypeDef JOY, JOYMode_TypeDef JoyMode, JOYPin_TypeDef Jo
 
           /* Enable and set Joy EXTI Interrupt to the lowest priority */
           HAL_NVIC_SetPriority((IRQn_Type)(JOY1_IRQn[joykey]), BSP_JOY_PRIO[joykey], 0x00);
+
           HAL_NVIC_EnableIRQ((IRQn_Type)(JOY1_IRQn[joykey]));
+
         }
       }
     }

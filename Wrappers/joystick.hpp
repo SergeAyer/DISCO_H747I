@@ -50,13 +50,17 @@ class Joystick {
         SelPressed,
         NonePressed
     };
-    State getState();
+    static State getState();
     using Event            = State;
-    using JoystickCallback = mbed::Callback<void(Event)>;
-    void setCallback(JoystickCallback clientCallback);
+    using JoystickCallback = mbed::Callback<void()>;
+    void setUpCallback(JoystickCallback clientCallback);
+    void setDownCallback(JoystickCallback clientCallback);
+    void setLeftCallback(JoystickCallback clientCallback);
+    void setRightCallback(JoystickCallback clientCallback);
+    void setSelCallback(JoystickCallback clientCallback);
 
    private:
-    // private methods
+    // private constructor
     Joystick();
 
     void onJoyUp();
@@ -72,7 +76,11 @@ class Joystick {
     static constexpr PinName kJoyRightPin = PK_5;
     static constexpr PinName kJoySelPin   = PK_2;
 
-    JoystickCallback _clientCallback = nullptr;
+    JoystickCallback _clientUpCallback = nullptr;
+    JoystickCallback _clientDownCallback = nullptr;
+    JoystickCallback _clientLeftCallback = nullptr;
+    JoystickCallback _clientRightCallback = nullptr;
+    JoystickCallback _clientSelCallback = nullptr;
 
     // InterruptIn pins used
     InterruptIn _joyUpPin;

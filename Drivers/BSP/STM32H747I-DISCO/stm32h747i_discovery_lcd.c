@@ -1517,6 +1517,7 @@ int32_t BSP_LCD_DrawBitmap(uint32_t Instance, uint32_t Xpos, uint32_t Ypos, uint
 int32_t BSP_LCD_FillRGBRect(uint32_t Instance, uint32_t Xpos, uint32_t Ypos, uint8_t *pData, uint32_t Width, uint32_t Height)
 {
     uint32_t i;
+
 #if (USE_DMA2D_TO_FILL_RGB_RECT == 1)
   uint32_t  Xaddress;
   for(i = 0; i < Height; i++)

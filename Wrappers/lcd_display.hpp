@@ -50,6 +50,7 @@ class LCDDisplay {
    public:
     LCDDisplay() = default;
     ReturnCode init();
+    void clearDisplay();
     void displayPicture(
         const uint32_t* pSrc, uint16_t x, uint16_t y, uint16_t xsize, uint16_t ysize);
     void displayStringAtLine(uint32_t line, const char* text);
@@ -134,6 +135,9 @@ class LCDDisplay {
                                    BSP_LCD_GetPixelFormat};
 
     // constant definitions
+    static constexpr uint32_t kDisplayWidth = 800;
+    static constexpr uint32_t kDisplayHeight = 480;
+    
     static constexpr uint32_t LCD_FRAME_BUFFER = 0xD0000000;
     static constexpr uint32_t VSYNC            = 1;
     static constexpr uint32_t VBP              = 1;

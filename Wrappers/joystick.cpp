@@ -42,22 +42,23 @@ Joystick& Joystick::getInstance() {
         int32_t rc = BSP_JOY_Init(JOY1, JOY_MODE_GPIO, JOY_ALL);
         // BSP_JOY_INIT always returns BSP_ERROR_NONE
         MBED_ASSERT(rc == BSP_ERROR_NONE);
-        tr_debug("Joystick initialized");
+        //tr_debug("Joystick initialized");
         _isInitialized = true;
     }
     return instance;
 }
 
-Joystick::Joystick()
-    : _joyUpPin(kJoyUpPin),
-      _joyDownPin(kJoyDownPin),
-      _joyLeftPin(kJoyLeftPin),
-      _joyRightPin(kJoyRightPin),
-      _joySelPin(kJoySelPin) {}
+Joystick::Joystick() 
+: _joyUpPin(kJoyUpPin),
+  _joyDownPin(kJoyDownPin),
+  _joyLeftPin(kJoyLeftPin),
+  _joyRightPin(kJoyRightPin),
+  _joySelPin(kJoySelPin) {
+}
 
 Joystick::State Joystick::getState() {
     int32_t joystickState = BSP_JOY_GetState(JOY1, 0);
-    tr_debug("joystick state is %d", joystickState);
+    tr_debug("joystick state is %" PRIi32 "", joystickState);
     State state = State::NonePressed;
     switch (joystickState) {
         case JOY_SEL:
@@ -75,51 +76,77 @@ Joystick::State Joystick::getState() {
         case JOY_UP:
             state = State::UpPressed;
             break;
+        case JOY_NONE:
+            // nothing pressed
+            break;
         default:
-            tr_error("case not handled");
+            tr_error("case not handled: %" PRIi32 "", joystickState);
     }
     return state;
 }
 
-void Joystick::setCallback(JoystickCallback clientCallback) {
+void Joystick::setUpCallback(JoystickCallback clientCallback) {
     _joyUpPin.fall(callback(this, &Joystick::onJoyUp));
-    _joyDownPin.fall(callback(this, &Joystick::onJoyDown));
-    _joyLeftPin.fall(callback(this, &Joystick::onJoyLeft));
-    _joyRightPin.fall(callback(this, &Joystick::onJoyRight));
-    _joySelPin.fall(callback(this, &Joystick::onJoySel));
 
     // register the callback
-    _clientCallback = clientCallback;
-    tr_debug("Callback set");
+    _clientUpCallback = clientCallback;
+}
+
+void Joystick::setDownCallback(JoystickCallback clientCallback) {
+    _joyDownPin.fall(callback(this, &Joystick::onJoyDown));
+    
+    // register the callback
+    _clientDownCallback = clientCallback;
+}
+
+void Joystick::setLeftCallback(JoystickCallback clientCallback) {
+    _joyLeftPin.fall(callback(this, &Joystick::onJoyLeft));
+    
+    // register the callback
+    _clientLeftCallback = clientCallback;
+}
+
+void Joystick::setRightCallback(JoystickCallback clientCallback) {
+    _joyRightPin.fall(callback(this, &Joystick::onJoyRight));
+    
+    // register the callback
+    _clientRightCallback = clientCallback;
+}
+
+void Joystick::setSelCallback(JoystickCallback clientCallback) {
+    _joySelPin.fall(callback(this, &Joystick::onJoySel));
+    
+    // register the callback
+    _clientSelCallback = clientCallback;
 }
 
 void Joystick::onJoyUp() {
-    if (_clientCallback != nullptr) {
-        _clientCallback(Event::UpPressed);
+    if (_clientUpCallback != nullptr) {
+        _clientUpCallback();
     }
 }
 
 void Joystick::onJoyDown() {
-    if (_clientCallback != nullptr) {
-        _clientCallback(Event::DownPressed);
+    if (_clientDownCallback != nullptr) {
+        _clientDownCallback();
     }
 }
 
 void Joystick::onJoyLeft() {
-    if (_clientCallback != nullptr) {
-        _clientCallback(Event::LeftPressed);
+    if (_clientLeftCallback != nullptr) {
+        _clientLeftCallback();
     }
 }
 
 void Joystick::onJoyRight() {
-    if (_clientCallback != nullptr) {
-        _clientCallback(Event::RightPressed);
+    if (_clientRightCallback != nullptr) {
+        _clientRightCallback();
     }
 }
 
 void Joystick::onJoySel() {
-    if (_clientCallback != nullptr) {
-        _clientCallback(Event::SelPressed);
+    if (_clientSelCallback != nullptr) {
+        _clientSelCallback();
     }
 }
 
