@@ -260,10 +260,20 @@ ReturnCode LCDDisplay::init() {
     /* Enable DSI Wrapper so DSI IP will drive the LTDC */
     __HAL_DSI_WRAPPER_ENABLE(&hlcd_dsi);
 
-    HAL_DSI_LongWrite(
-        &hlcd_dsi, 0, DSI_DCS_LONG_PKT_WRITE, 4, OTM8009A_CMD_CASET, (uint8_t*)pCol_);
-    HAL_DSI_LongWrite(
-        &hlcd_dsi, 0, DSI_DCS_LONG_PKT_WRITE, 4, OTM8009A_CMD_PASET, (uint8_t*)pPage_);
+    HAL_DSI_LongWrite(&hlcd_dsi,
+                      0,
+                      DSI_DCS_LONG_PKT_WRITE,
+                      4,
+                      OTM8009A_CMD_CASET,
+                      // NOLINTNEXTLINE(readability/casting)
+                      (uint8_t*)pCol_);
+    HAL_DSI_LongWrite(&hlcd_dsi,
+                      0,
+                      DSI_DCS_LONG_PKT_WRITE,
+                      4,
+                      OTM8009A_CMD_PASET,
+                      // NOLINTNEXTLINE(readability/casting)
+                      (uint8_t*)pPage_);
 
     setFont(createFont24());
 
@@ -323,6 +333,7 @@ void LCDDisplay::displayPicture(
                       DSI_DCS_LONG_PKT_WRITE,
                       2,
                       OTM8009A_CMD_WRTESCN,
+                      // NOLINTNEXTLINE(readability/casting)
                       (uint8_t*)pSyncLeft_);
 
     /* Refresh the LCD */
@@ -516,6 +527,7 @@ void LCDDisplay::briefDisplay() {
                       DSI_DCS_LONG_PKT_WRITE,
                       2,
                       OTM8009A_CMD_WRTESCN,
+                      // NOLINTNEXTLINE(readability/casting)
                       (uint8_t*)pSyncLeft_);
 
     /* Refresh the LCD */
