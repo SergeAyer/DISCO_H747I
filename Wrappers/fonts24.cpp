@@ -27,8 +27,7 @@
 
 namespace disco {
 // clang-format off
-const uint8_t Font24_Table [] =
-{
+const uint8_t Font24_Table[] = {
 	// @0 ' ' (17 pixels wide)
 	0x00, 0x00, 0x00, //
 	0x00, 0x00, 0x00, //

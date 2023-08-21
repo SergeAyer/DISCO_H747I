@@ -275,23 +275,26 @@ ReturnCode LCDDisplay::init() {
                       // NOLINTNEXTLINE(readability/casting)
                       (uint8_t*)pPage_);
 
-    setFont(createFont24());
+    setFont(createFont36());
 
-    // briefDisplay();
-    // HAL_DSI_Refresh(&hlcd_dsi);
-    clearDisplay();
+    fillDisplay(LCD_COLOR_WHITE);
 
     return ReturnCode::Ok;
 }
 
-void LCDDisplay::clearDisplay() {
-    fillRect(0, 0, lcdXsize_, lcdYsize_, LCD_COLOR_WHITE);
+void LCDDisplay::fillDisplay(uint32_t color) {
+    fillRectangle(0, 0, lcdXsize_, lcdYsize_, color);
+    refreshLCD();
+}
+
+void LCDDisplay::fillRectangle(
+    uint32_t xPos, uint32_t yPos, uint32_t width, uint32_t height, uint32_t color) {
+    fillRect(xPos, yPos, width, height, color);
     refreshLCD();
 }
 
 void LCDDisplay::displayPicture(
     const uint32_t* pSrc, uint16_t x, uint16_t y, uint16_t xsize, uint16_t ysize) {
-    tr_debug("Starting displaying picture");
     uint32_t destination = (uint32_t)LCD_FRAME_BUFFER + (y * 800 + x) * 4;
     uint32_t source      = (uint32_t)pSrc;
 
@@ -338,8 +341,6 @@ void LCDDisplay::displayPicture(
 
     /* Refresh the LCD */
     HAL_DSI_Refresh(&hlcd_dsi);
-
-    tr_debug("Displaying picture done");
 }
 
 void LCDDisplay::refreshLCD() { HAL_DSI_Refresh(&hlcd_dsi); }
@@ -509,13 +510,21 @@ void LCDDisplay::LCD_LayerInit(uint16_t layerIndex, uint32_t address) {
  * @param  None
  * @retval None
  */
-void LCDDisplay::briefDisplay() {
+void LCDDisplay::displayWelcome(const char* text, AlignMode alignMode) {
+    fillDisplay(LCD_COLOR_WHITE);
     setTextColor(LCD_COLOR_BLUE);
     fillRect(0, 0, 800, 112, LCD_COLOR_BLUE);
     setTextColor(LCD_COLOR_WHITE);
     fillRect(0, 112, 800, 368, LCD_COLOR_WHITE);
     setBackColor(LCD_COLOR_BLUE);
-    displayStringAtLine(1, "Welcome to TSM_AdvEmbSof");
+    setFont(createFont36b());
+    displayStringAtLine(1, "Welcome", alignMode);
+    setTextColor(LCD_COLOR_BLUE);
+    setBackColor(LCD_COLOR_WHITE);
+    setFont(createFont36());
+    displayStringAtLine(3, "to", alignMode);
+    displayStringAtLine(5, text, alignMode);
+
     // setFont(&Font16);
     // displayStringAtLine(4, (uint8_t *)"This example shows how to display images on LCD
     // DSI using the partial"); displayStringAtLine(5, (uint8_t *)"Refresh method by
@@ -546,6 +555,18 @@ void LCDDisplay::setFont(Font* pFont) { drawProp_[currentLCDLayer_].pFont = pFon
  * @retval Used layer font
  */
 Font* LCDDisplay::getFont() { return drawProp_[currentLCDLayer_].pFont; }
+
+/**
+ * @brief  Gets the LCD width.
+ * @retval LCD width
+ */
+uint32_t LCDDisplay::getWidth() const { return lcdXsize_; }
+
+/**
+ * @brief  Gets the LCD height
+ * @retval LCD width
+ */
+uint32_t LCDDisplay::getHeight() const { return lcdYsize_; }
 
 /**
  * @brief  Compute the line number depending on font size
@@ -607,8 +628,8 @@ void LCDDisplay::fillRGBRect(
  * @param  line: Line where to display the character shape
  * @param  ptr: Pointer to string to display on LCD
  */
-void LCDDisplay::displayStringAtLine(uint32_t line, const char* text) {
-    displayStringAt(0, computeDisplayLineNumber(line), text, AlignMode::CENTER_MODE);
+void LCDDisplay::displayStringAtLine(uint32_t line, const char* text, AlignMode mode) {
+    displayStringAt(10, computeDisplayLineNumber(line), text, mode);
 }
 
 /**
@@ -627,20 +648,20 @@ void LCDDisplay::displayStringAt(uint32_t xPos,
                                  const char* text,
                                  AlignMode mode) {
     /* Get the text size */
-    uint32_t size = 0;
-    char* ptr     = const_cast<char*>(text);
+    uint32_t nbrOfChars = 0;
+    char* ptr           = const_cast<char*>(text);
     while (*ptr++) {
-        size++;
+        nbrOfChars++;
     }
 
     /* Characters number per line */
-    uint32_t xsize = (lcdXsize_ / drawProp_[currentLCDLayer_].pFont->width);
-
-    uint32_t refcolumn = 1;
+    uint32_t nbrOfCharPerLine = (lcdXsize_ / drawProp_[currentLCDLayer_].pFont->width);
+    uint32_t refcolumn        = 1;
     switch (mode) {
         case AlignMode::CENTER_MODE: {
-            refcolumn =
-                xPos + ((xsize - size) * drawProp_[currentLCDLayer_].pFont->width) / 2;
+            refcolumn = xPos + ((nbrOfCharPerLine - nbrOfChars) *
+                                drawProp_[currentLCDLayer_].pFont->width) /
+                                   2;
             break;
         }
         case AlignMode::LEFT_MODE: {
@@ -648,8 +669,8 @@ void LCDDisplay::displayStringAt(uint32_t xPos,
             break;
         }
         case AlignMode::RIGHT_MODE: {
-            refcolumn =
-                -xPos + ((xsize - size) * drawProp_[currentLCDLayer_].pFont->width);
+            refcolumn = -xPos + ((nbrOfCharPerLine - nbrOfChars) *
+                                 drawProp_[currentLCDLayer_].pFont->width);
             break;
         }
         default: {
@@ -667,12 +688,12 @@ void LCDDisplay::displayStringAt(uint32_t xPos,
     uint32_t i = 0;
     while ((*text != 0) & (((lcdXsize_ - (i * drawProp_[currentLCDLayer_].pFont->width)) &
                             0xFFFF) >= drawProp_[currentLCDLayer_].pFont->width)) {
-        /* Display one character on LCD */
+        // Display one character on LCD
         displayChar(refcolumn, yPos, *text);
-        /* Decrement the column position by 16 */
+        // Inclrement the column position by the width
         refcolumn += drawProp_[currentLCDLayer_].pFont->width;
 
-        /* Point on the next character */
+        // Point on the next character
         text++;
         i++;
     }
@@ -686,12 +707,9 @@ void LCDDisplay::displayStringAt(uint32_t xPos,
  *           This parameter must be a number between Min_Data = 0x20 and Max_Data = 0x7E
  */
 void LCDDisplay::displayChar(uint32_t xPos, uint32_t yPos, uint8_t ascii) {
-    drawChar(
-        xPos,
-        yPos,
-        &drawProp_[currentLCDLayer_]
-             .pFont->table[(ascii - ' ') * drawProp_[currentLCDLayer_].pFont->height *
-                           ((drawProp_[currentLCDLayer_].pFont->width + 7) / 8)]);
+    uint32_t offsetInTable = (ascii - ' ') * drawProp_[currentLCDLayer_].pFont->height *
+                             ((drawProp_[currentLCDLayer_].pFont->width + 7) / 8);
+    drawChar(xPos, yPos, &drawProp_[currentLCDLayer_].pFont->table[offsetInTable]);
 }
 
 /**
@@ -704,31 +722,27 @@ void LCDDisplay::drawChar(uint32_t xPos, uint32_t yPos, const uint8_t* pData) {
     uint32_t height = drawProp_[currentLCDLayer_].pFont->height;
     uint32_t width  = drawProp_[currentLCDLayer_].pFont->width;
 
+    // compute the bit offset in each line
     uint32_t offset = 8 * ((width + 7) / 8) - width;
 
+    // draw each line of the char stored in table
     for (uint32_t i = 0; i < height; i++) {
-        uint8_t* pchar = (const_cast<uint8_t*>(pData) + (width + 7) / 8 * i);
+        // get the start address of the line
+        uint32_t nbrOfBytesPerLine = (width + 7) / 8;
+        uint8_t* pchar = (const_cast<uint8_t*>(pData) + nbrOfBytesPerLine * i);
 
-        uint32_t line = 0;
-        switch (((width + 7) / 8)) {
-            case 1:
-                line = pchar[0];
-                break;
-
-            case 2:
-                line = (pchar[0] << 8) | pchar[1];
-                break;
-
-            case 3:
-            default:
-                line = (pchar[0] << 16) | (pchar[1] << 8) | pchar[2];
-                break;
+        uint64_t line = 0;
+        for (uint32_t i = 0; i < nbrOfBytesPerLine; i++) {
+            line <<= 8;
+            line |= pchar[i];
         }
 
         if (lcdPixelFormat_ == LCD_PIXEL_FORMAT_RGB565) {
-            uint16_t rgb565[24] = {0};
+            uint16_t rgb565[48] = {0};
             for (uint32_t j = 0; j < width; j++) {
-                if (line & (1 << (width - j + offset - 1))) {
+                // check whether the j^th bit in line is on or off
+                uint64_t bitInPixel = (uint64_t)1 << (uint64_t)(width - j + offset - 1);
+                if (line & bitInPixel) {
                     rgb565[j] =
                         CONVERTARGB88882RGB565(drawProp_[currentLCDLayer_].textColor);
                 } else {
@@ -739,9 +753,11 @@ void LCDDisplay::drawChar(uint32_t xPos, uint32_t yPos, const uint8_t* pData) {
 
             fillRGBRect(xPos, yPos++, (uint8_t*)(&rgb565[0]), width, 1);  // NOLINT
         } else {
-            uint32_t argb8888[24] = {0};
+            uint32_t argb8888[48] = {0};
             for (uint32_t j = 0; j < width; j++) {
-                if (line & (1 << (width - j + offset - 1))) {
+                // check whether the j^th bit in line is on or off
+                uint64_t bitInPixel = (uint64_t)1 << (uint64_t)(width - j + offset - 1);
+                if (line & bitInPixel) {
                     argb8888[j] = drawProp_[currentLCDLayer_].textColor;
                 } else {
                     argb8888[j] = drawProp_[currentLCDLayer_].backColor;

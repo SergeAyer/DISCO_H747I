@@ -50,25 +50,35 @@ class LCDDisplay {
    public:
     LCDDisplay() = default;
     ReturnCode init();
-    void clearDisplay();
+    void fillDisplay(uint32_t color);
+    void fillRectangle(
+        uint32_t xPos, uint32_t yPos, uint32_t width, uint32_t height, uint32_t color);
+    void setFont(Font* pFont);
+    Font* getFont();
+    uint32_t getWidth() const;
+    uint32_t getHeight() const;
+    enum class AlignMode {
+        CENTER_MODE = 0x01, /*!< Center mode */
+        RIGHT_MODE  = 0x02, /*!< Right mode  */
+        LEFT_MODE   = 0x03  /*!< Left mode   */
+    };
+    void displayWelcome(const char* text, AlignMode alignMode);
     void displayPicture(
         const uint32_t* pSrc, uint16_t x, uint16_t y, uint16_t xsize, uint16_t ysize);
-    void displayStringAtLine(uint32_t line, const char* text);
+    void displayStringAtLine(uint32_t line, const char* text, AlignMode alignMode);
     void refreshLCD();
 
     // public constants
     static constexpr uint32_t LCD_COLOR_BLUE  = 0xFF0000FFUL;
     static constexpr uint32_t LCD_COLOR_WHITE = 0xFFFFFFFFUL;
+    static constexpr uint32_t LCD_COLOR_BLACK = 0x00000000UL;
 
    private:
     // private methods
     void mspInit();
     void ltdcInit();
-    void briefDisplay();
 
     // draw context related methods
-    void setFont(Font* pFont);
-    Font* getFont();
     uint32_t computeDisplayLineNumber(uint32_t line);
     void setTextColor(uint32_t color);
     void setBackColor(uint32_t color);
@@ -76,11 +86,6 @@ class LCDDisplay {
         uint32_t xPos, uint32_t yPos, uint32_t width, uint32_t height, uint32_t color);
     void fillRGBRect(
         uint32_t xPos, uint32_t yPos, uint8_t* pData, uint32_t width, uint32_t height);
-    enum class AlignMode {
-        CENTER_MODE = 0x01, /*!< Center mode */
-        RIGHT_MODE  = 0x02, /*!< Right mode  */
-        LEFT_MODE   = 0x03  /*!< Left mode   */
-    };
     void displayStringAt(uint32_t xPos, uint32_t yPos, const char* text, AlignMode mode);
     void displayChar(uint32_t xPos, uint32_t yPos, uint8_t ascii);
     void drawChar(uint32_t xPos, uint32_t yPos, const uint8_t* pData);

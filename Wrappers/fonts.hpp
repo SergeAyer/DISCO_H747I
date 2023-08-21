@@ -36,5 +36,7 @@ struct Font {
 };
 
 extern Font* createFont24();
+extern Font* createFont36();
+extern Font* createFont36b();
 
 }  // namespace disco

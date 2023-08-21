@@ -8,6 +8,16 @@ The following changes are required after importing this library (with mbed os 6.
 - Modify line 73 of file mbed-os\targets\TARGET_STM\stm_spi_api.c -> extern HAL_StatusTypeDef HAL_SPIEx_FlushRxFifo(const SPI_HandleTypeDef *hspi);
 - Modify line 87 of file mbed-os\tools\toolchains\mbed_toolchain.py ->   "Cortex-M7FD":     ["__CORTEX_M7", "ARM_MATH_CM7", "__FPU_PRESENT=1U",
 - Add "USBDEVICE" at line 3474 of file mbed-os\targets\targets.json
+- Modifiy "mbed_app.json" as follows:
+   - In the config section:
+      "usb_speed": {
+        "help": "USE_USB_OTG_FS or USE_USB_OTG_HS or USE_USB_HS_IN_FS",
+        "value": "USE_USB_OTG_FS"
+      }
+
+   - In the target_override section:   
+      "target.device_has_add": ["USBDEVICE"]
+
 
 
 
