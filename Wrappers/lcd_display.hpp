@@ -68,7 +68,7 @@ class LCDDisplay {
     void displayPicture(
         const uint32_t* pSrc, uint16_t x, uint16_t y, uint16_t xsize, uint16_t ysize);
     void displayStringAtLine(uint32_t line, const char* text, AlignMode alignMode);
-    void displayStringAt(uint32_t xPos, uint32_t yPos, const char* text, AlignMode mode);    
+    void displayStringAt(uint32_t xPos, uint32_t yPos, const char* text, AlignMode mode);
     void displayVerticalLine(uint32_t xPos, uint32_t width);
     void displayHorizontalLine(uint32_t yPos, uint32_t width);
     void refreshLCD();
@@ -146,7 +146,7 @@ class LCDDisplay {
     // constant definitions
     static constexpr uint32_t kDisplayWidth  = 800;
     static constexpr uint32_t kDisplayHeight = 480;
-    static constexpr uint32_t kTitleHeight = 112;
+    static constexpr uint32_t kTitleHeight   = 112;
 
     static constexpr uint32_t LCD_FRAME_BUFFER = 0xD0000000;
     static constexpr uint32_t VSYNC            = 1;

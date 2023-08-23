@@ -56,7 +56,7 @@ Joystick::Joystick()
 
 Joystick::State Joystick::getState() {
     int32_t joystickState = BSP_JOY_GetState(JOY1, 0);
-    
+
     State state = State::NonePressed;
     switch (joystickState) {
         case JOY_SEL:
