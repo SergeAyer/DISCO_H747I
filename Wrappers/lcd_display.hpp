@@ -57,15 +57,20 @@ class LCDDisplay {
     Font* getFont();
     uint32_t getWidth() const;
     uint32_t getHeight() const;
+    uint32_t getTitleHeight() const;
     enum class AlignMode {
         CENTER_MODE = 0x01, /*!< Center mode */
         RIGHT_MODE  = 0x02, /*!< Right mode  */
         LEFT_MODE   = 0x03  /*!< Left mode   */
     };
     void displayWelcome(const char* text, AlignMode alignMode);
+    void displayTitle(const char* text, AlignMode alignMode);
     void displayPicture(
         const uint32_t* pSrc, uint16_t x, uint16_t y, uint16_t xsize, uint16_t ysize);
     void displayStringAtLine(uint32_t line, const char* text, AlignMode alignMode);
+    void displayStringAt(uint32_t xPos, uint32_t yPos, const char* text, AlignMode mode);    
+    void displayVerticalLine(uint32_t xPos, uint32_t width);
+    void displayHorizontalLine(uint32_t yPos, uint32_t width);
     void refreshLCD();
 
     // public constants
@@ -86,7 +91,6 @@ class LCDDisplay {
         uint32_t xPos, uint32_t yPos, uint32_t width, uint32_t height, uint32_t color);
     void fillRGBRect(
         uint32_t xPos, uint32_t yPos, uint8_t* pData, uint32_t width, uint32_t height);
-    void displayStringAt(uint32_t xPos, uint32_t yPos, const char* text, AlignMode mode);
     void displayChar(uint32_t xPos, uint32_t yPos, uint8_t ascii);
     void drawChar(uint32_t xPos, uint32_t yPos, const uint8_t* pData);
     static int32_t getXSize(uint32_t instance, uint32_t* xSize);
@@ -142,6 +146,7 @@ class LCDDisplay {
     // constant definitions
     static constexpr uint32_t kDisplayWidth  = 800;
     static constexpr uint32_t kDisplayHeight = 480;
+    static constexpr uint32_t kTitleHeight = 112;
 
     static constexpr uint32_t LCD_FRAME_BUFFER = 0xD0000000;
     static constexpr uint32_t VSYNC            = 1;

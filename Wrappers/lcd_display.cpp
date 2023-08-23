@@ -506,16 +506,16 @@ void LCDDisplay::LCD_LayerInit(uint16_t layerIndex, uint32_t address) {
 }
 
 /**
- * @brief  Display Example description.
+ * @brief  Display Welcome Message
  * @param  None
  * @retval None
  */
 void LCDDisplay::displayWelcome(const char* text, AlignMode alignMode) {
     fillDisplay(LCD_COLOR_WHITE);
     setTextColor(LCD_COLOR_BLUE);
-    fillRect(0, 0, 800, 112, LCD_COLOR_BLUE);
+    fillRect(0, 0, lcdXsize_, kTitleHeight, LCD_COLOR_BLUE);
     setTextColor(LCD_COLOR_WHITE);
-    fillRect(0, 112, 800, 368, LCD_COLOR_WHITE);
+    fillRect(0, kTitleHeight, lcdXsize_, lcdYsize_ - kTitleHeight, LCD_COLOR_WHITE);
     setBackColor(LCD_COLOR_BLUE);
     setFont(createFont36b());
     displayStringAtLine(1, "Welcome", alignMode);
@@ -524,12 +524,6 @@ void LCDDisplay::displayWelcome(const char* text, AlignMode alignMode) {
     setFont(createFont36());
     displayStringAtLine(3, "to", alignMode);
     displayStringAtLine(5, text, alignMode);
-
-    // setFont(&Font16);
-    // displayStringAtLine(4, (uint8_t *)"This example shows how to display images on LCD
-    // DSI using the partial"); displayStringAtLine(5, (uint8_t *)"Refresh method by
-    // splitting the display area.");
-    /* set the refresh area to LCD left half */
 
     HAL_DSI_LongWrite(&hlcd_dsi,
                       0,
@@ -541,6 +535,36 @@ void LCDDisplay::displayWelcome(const char* text, AlignMode alignMode) {
 
     /* Refresh the LCD */
     HAL_DSI_Refresh(&hlcd_dsi);
+}
+
+/**
+ * @brief  Display Title Bar
+ * @param  None
+ * @retval None
+ */
+void LCDDisplay::displayTitle(const char* text, AlignMode alignMode) {
+    fillDisplay(LCD_COLOR_WHITE);
+    setTextColor(LCD_COLOR_BLUE);
+    fillRect(0, 0, lcdXsize_, kTitleHeight, LCD_COLOR_BLUE);
+    setBackColor(LCD_COLOR_BLUE);
+    setTextColor(LCD_COLOR_WHITE);
+    setFont(createFont36b());
+    displayStringAtLine(1, text, alignMode);
+
+    HAL_DSI_LongWrite(&hlcd_dsi,
+                      0,
+                      DSI_DCS_LONG_PKT_WRITE,
+                      2,
+                      OTM8009A_CMD_WRTESCN,
+                      // NOLINTNEXTLINE(readability/casting)
+                      (uint8_t*)pSyncLeft_);
+
+    // Refresh the LCD
+    HAL_DSI_Refresh(&hlcd_dsi);
+
+    // restore back and text colors
+    setBackColor(LCD_COLOR_WHITE);
+    setTextColor(LCD_COLOR_BLACK);
 }
 
 // DrawContext
@@ -567,6 +591,12 @@ uint32_t LCDDisplay::getWidth() const { return lcdXsize_; }
  * @retval LCD width
  */
 uint32_t LCDDisplay::getHeight() const { return lcdYsize_; }
+
+/**
+ * @brief  Gets the height used for the title
+ * @retval LCD width
+ */
+uint32_t LCDDisplay::getTitleHeight() const { return kTitleHeight; }
 
 /**
  * @brief  Compute the line number depending on font size
@@ -630,6 +660,16 @@ void LCDDisplay::fillRGBRect(
  */
 void LCDDisplay::displayStringAtLine(uint32_t line, const char* text, AlignMode mode) {
     displayStringAt(10, computeDisplayLineNumber(line), text, mode);
+}
+
+void LCDDisplay::displayVerticalLine(uint32_t xPos, uint32_t width) {
+    for (uint32_t i = kTitleHeight; i < lcdYsize_; i++) {
+        fillRect(xPos, i, width, 1, LCD_COLOR_BLUE);
+    }
+}
+
+void LCDDisplay::displayHorizontalLine(uint32_t yPos, uint32_t width) {
+    fillRect(0, yPos, lcdXsize_, width, LCD_COLOR_BLUE);
 }
 
 /**

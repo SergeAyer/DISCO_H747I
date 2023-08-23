@@ -13,10 +13,10 @@
 // limitations under the License.
 
 /****************************************************************************
- * @file fonts18.cpp
+ * @file fonts36.cpp
  * @author Serge Ayer <serge.ayer@hefr.ch>
  *
- * @brief Implementation of fonts (size 24)
+ * @brief Implementation of fonts (size 36 - Times New Roman)
  *
  * @date 2023-07-10
  * @version 0.0.1

@@ -35,7 +35,9 @@ struct Font {
     uint16_t height;
 };
 
+extern Font* createFont18();
 extern Font* createFont24();
+extern Font* createFont26b();
 extern Font* createFont36();
 extern Font* createFont36b();
 

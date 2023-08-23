@@ -42,7 +42,6 @@ Joystick& Joystick::getInstance() {
         int32_t rc = BSP_JOY_Init(JOY1, JOY_MODE_GPIO, JOY_ALL);
         // BSP_JOY_INIT always returns BSP_ERROR_NONE
         MBED_ASSERT(rc == BSP_ERROR_NONE);
-        // tr_debug("Joystick initialized");
         _isInitialized = true;
     }
     return instance;
@@ -57,7 +56,7 @@ Joystick::Joystick()
 
 Joystick::State Joystick::getState() {
     int32_t joystickState = BSP_JOY_GetState(JOY1, 0);
-    tr_debug("joystick state is %" PRIi32 "", joystickState);
+    
     State state = State::NonePressed;
     switch (joystickState) {
         case JOY_SEL:
