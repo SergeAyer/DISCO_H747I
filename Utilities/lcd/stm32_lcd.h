@@ -27,7 +27,6 @@
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "../Fonts/fonts.h"
 #include "lcd.h"
 #include <stddef.h>
 
@@ -113,6 +112,16 @@
 /** @defgroup UTIL_LCD_Exported_Types STM32 LCD Utility Exported Types
   * @{
   */
+
+/** @defgroup FONTS_Exported_Types Exported Types
+  * @{
+  */
+typedef struct _tFont
+{
+  const uint8_t *table;
+  uint16_t Width;
+  uint16_t Height;
+} sFONT;
 
 /**
   * @brief  LCD Utility Drawing main properties
