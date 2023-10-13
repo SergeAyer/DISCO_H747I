@@ -27,6 +27,5 @@ repos:
   hooks:
   -   id: cppcheck
       name: cppcheck
-      entry: cppcheck
+      entry: cppcheck --enable=all --suppress=missingInclude:* --suppress=unusedFunction:* --inline-suppr --std=c++14 --error-exitcode=1 -v
       language: system
-      args: [-IDISCO_H747I/Wrappers]

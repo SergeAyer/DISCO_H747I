@@ -265,6 +265,7 @@ ReturnCode LCDDisplay::init() {
                       DSI_DCS_LONG_PKT_WRITE,
                       4,
                       OTM8009A_CMD_CASET,
+                      // cppcheck-suppress cstyleCast
                       // NOLINTNEXTLINE(readability/casting)
                       (uint8_t*)pCol_);
     HAL_DSI_LongWrite(&hlcd_dsi,
@@ -272,6 +273,7 @@ ReturnCode LCDDisplay::init() {
                       DSI_DCS_LONG_PKT_WRITE,
                       4,
                       OTM8009A_CMD_PASET,
+                      // cppcheck-suppress cstyleCast
                       // NOLINTNEXTLINE(readability/casting)
                       (uint8_t*)pPage_);
 
@@ -336,6 +338,7 @@ void LCDDisplay::displayPicture(
                       DSI_DCS_LONG_PKT_WRITE,
                       2,
                       OTM8009A_CMD_WRTESCN,
+                      // cppcheck-suppress cstyleCast
                       // NOLINTNEXTLINE(readability/casting)
                       (uint8_t*)pSyncLeft_);
 
@@ -530,6 +533,7 @@ void LCDDisplay::displayWelcome(const char* text, AlignMode alignMode) {
                       DSI_DCS_LONG_PKT_WRITE,
                       2,
                       OTM8009A_CMD_WRTESCN,
+                      // cppcheck-suppress cstyleCast
                       // NOLINTNEXTLINE(readability/casting)
                       (uint8_t*)pSyncLeft_);
 
@@ -556,6 +560,7 @@ void LCDDisplay::displayTitle(const char* text, AlignMode alignMode) {
                       DSI_DCS_LONG_PKT_WRITE,
                       2,
                       OTM8009A_CMD_WRTESCN,
+                      // cppcheck-suppress cstyleCast
                       // NOLINTNEXTLINE(readability/casting)
                       (uint8_t*)pSyncLeft_);
 
@@ -772,7 +777,7 @@ void LCDDisplay::drawChar(uint32_t xPos, uint32_t yPos, const uint8_t* pData) {
         uint8_t* pchar = (const_cast<uint8_t*>(pData) + nbrOfBytesPerLine * i);
 
         uint64_t line = 0;
-        for (uint32_t i = 0; i < nbrOfBytesPerLine; i++) {
+        for (uint32_t j = 0; i < nbrOfBytesPerLine; j++) {
             line <<= 8;
             line |= pchar[i];
         }
