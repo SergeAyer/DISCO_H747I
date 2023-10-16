@@ -769,17 +769,17 @@ void LCDDisplay::drawChar(uint32_t xPos, uint32_t yPos, const uint8_t* pData) {
 
     // compute the bit offset in each line
     uint32_t offset = 8 * ((width + 7) / 8) - width;
+    uint32_t nbrOfBytesPerLine = (width + 7) / 8;
 
     // draw each line of the char stored in table
     for (uint32_t i = 0; i < height; i++) {
         // get the start address of the line
-        uint32_t nbrOfBytesPerLine = (width + 7) / 8;
         uint8_t* pchar = (const_cast<uint8_t*>(pData) + nbrOfBytesPerLine * i);
 
         uint64_t line = 0;
-        for (uint32_t j = 0; i < nbrOfBytesPerLine; j++) {
+        for (uint32_t j = 0; j < nbrOfBytesPerLine; j++) {
             line <<= 8;
-            line |= pchar[i];
+            line |= pchar[j];
         }
 
         if (lcdPixelFormat_ == LCD_PIXEL_FORMAT_RGB565) {
