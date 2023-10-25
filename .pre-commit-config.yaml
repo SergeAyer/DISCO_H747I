@@ -27,5 +27,6 @@ repos:
   hooks:
   -   id: cppcheck
       name: cppcheck
+      require_serial: true
       entry: cppcheck --enable=all --suppress=missingInclude:* --suppress=unusedFunction:* --inline-suppr --std=c++14 --error-exitcode=1 -v
       language: system

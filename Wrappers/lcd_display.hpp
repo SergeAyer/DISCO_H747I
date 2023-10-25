@@ -119,9 +119,12 @@ class LCDDisplay {
     // lcd related
     static constexpr uint8_t kMaxNbrOfLayers = 2;
     struct LCDContext {
+        // cppcheck-suppress unusedStructMember
         uint32_t textColor; /*!< Specifies the color of text */
+        // cppcheck-suppress unusedStructMember
         uint32_t backColor; /*!< Specifies the background color below the text */
-        Font* pFont;        /*!< Specifies the font used for the text */
+        // cppcheck-suppress unusedStructMember
+        Font* pFont; /*!< Specifies the font used for the text */
     };
     LCDContext drawProp_[kMaxNbrOfLayers] = {
         {.textColor = LCD_COLOR_BLUE, .backColor = LCD_COLOR_WHITE, .pFont = nullptr},

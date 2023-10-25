@@ -768,7 +768,7 @@ void LCDDisplay::drawChar(uint32_t xPos, uint32_t yPos, const uint8_t* pData) {
     uint32_t width  = drawProp_[currentLCDLayer_].pFont->width;
 
     // compute the bit offset in each line
-    uint32_t offset = 8 * ((width + 7) / 8) - width;
+    uint32_t offset            = 8 * ((width + 7) / 8) - width;
     uint32_t nbrOfBytesPerLine = (width + 7) / 8;
 
     // draw each line of the char stored in table

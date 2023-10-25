@@ -30,8 +30,11 @@
 namespace disco {
 
 struct Font {
+    // cppcheck-suppress unusedStructMember
     const uint8_t* table;
+    // cppcheck-suppress unusedStructMember
     uint16_t width;
+    // cppcheck-suppress unusedStructMember
     uint16_t height;
 };
 
