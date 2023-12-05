@@ -24,7 +24,7 @@ After importing this library, one needs to:
       ]
       ```
    - Comment lines 550 and 551 of file "mbed-os/targets/TARGET_STM/TARGET_STM32H7/TARGET_STM32H747xI/TARGET_DISCO_H747I\PeripheralPins.c"
-     ```json
-   // {PC_2, USB_HS, STM_PIN_DATA(STM_MODE_AF_PP, GPIO_PULLUP, GPIO_AF10_OTG2_HS)}, // USB_OTG_HS_ULPI_DIR // Connected to PMOD\#3
-   // {PC_3, USB_HS, STM_PIN_DATA(STM_MODE_AF_PP, GPIO_PULLUP, GPIO_AF10_OTG2_HS)}, // USB_OTG_HS_ULPI_NXT // Connected to PMOD\#2
+     ```cpp
+     // {PC_2, USB_HS, STM_PIN_DATA(STM_MODE_AF_PP, GPIO_PULLUP, GPIO_AF10_OTG2_HS)}, // USB_OTG_HS_ULPI_DIR // Connected to PMOD\#3
+     // {PC_3, USB_HS, STM_PIN_DATA(STM_MODE_AF_PP, GPIO_PULLUP, GPIO_AF10_OTG2_HS)}, // USB_OTG_HS_ULPI_NXT // Connected to PMOD\#2
      ```
