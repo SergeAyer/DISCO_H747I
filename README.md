@@ -14,7 +14,7 @@ After importing this library, one needs to:
               "value": "USE_USB_OTG_HS"
           }
       }
-      ```.
+      ```
    - For device "DISCO_H747I_CM7" (line 3456), modify the "device_has_add" property
    as follows:
       ```json
